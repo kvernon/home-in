@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "get-mortgage-rate": "0.0.0"
+  },
+  "changesets": [
+    "fresh-badgers-press"
+  ]
+}

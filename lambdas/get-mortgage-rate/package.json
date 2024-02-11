@@ -1,0 +1,36 @@
+{
+  "name": "get-mortgage-rate",
+  "version": "0.0.1-next.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "clean:dist": "rimraf --glob dist",
+    "clean:all": "rimraf --glob dist node_modules",
+    "clean:node_modules": "rimraf node_modules",
+    "build:all": "tsc",
+    "build:deploy": "tsc --project ./tsconfig.deploy.json",
+    "files:node_modules": "ts-node ./infrastructure/copyToFolder.ts",
+    "test": "jest",
+    "test:config:debug": "jest --showConfig",
+    "infra:zip": "ts-node ./infrastructure/zip",
+    "bundle:pack": "pnpm clean:dist && pnpm build:deploy && pnpm files:node_modules && pnpm infra:zip",
+    "bundle:aws": "ts-node ./infrastructure/aws",
+    "bundle:deploy": "pnpm bundle:pack && pnpm bundle:aws"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/aws-lambda": "^8.10.133",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18.19.17",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@cubedelement.com/civil-web": "^2.0.0"
+  }
+}

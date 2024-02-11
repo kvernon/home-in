@@ -1,0 +1,19 @@
+{
+	"executionStatus": {
+		"C:\\Users\\kelly\\git\\pnpm-home-in\\lambdas\\get-mortgage-rate": {
+			"status": "failure",
+			"duration": 2650.5725,
+			"error": {
+				"code": "ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL",
+				"errno": 1,
+				"pkgid": "get-mortgage-rate@1.0.0",
+				"stage": "test",
+				"script": "jest",
+				"pkgname": "get-mortgage-rate",
+				"prefix": "C:\\Users\\kelly\\git\\pnpm-home-in\\lambdas\\get-mortgage-rate"
+			},
+			"message": "get-mortgage-rate@1.0.0 test: `jest`\nExit status 1",
+			"prefix": "C:\\Users\\kelly\\git\\pnpm-home-in\\lambdas\\get-mortgage-rate"
+		}
+	}
+}
