@@ -5,6 +5,7 @@
     "get-mortgage-rate": "0.0.0"
   },
   "changesets": [
-    "fresh-badgers-press"
+    "fresh-badgers-press",
+    "nice-bulldogs-beam"
   ]
 }
