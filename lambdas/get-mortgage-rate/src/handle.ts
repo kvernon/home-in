@@ -1,5 +1,6 @@
-import {APIGatewayProxyResult, Context, Handler} from 'aws-lambda';
+/* global fetch */
 
+import {APIGatewayProxyResult, Context, Handler} from 'aws-lambda';
 import {NotFoundHttpStatusError, StatusCodes} from '@cubedelement.com/civil-web';
 import * as process from "node:process";
 import {MortgageAverage, RawMortgageRate} from "./raw-mortgage-rate";
@@ -63,6 +64,7 @@ export const handler: Handler = async (event: {
 
         const result: MortgageAverage = {loanType: '', rate: 0};
 
+        console.log('response', response);
         if (!response?.loan_analysis?.market?.mortgage_data?.average_rate?.length) {
             return {
                 statusCode: StatusCodes.notFound,
@@ -75,6 +77,7 @@ export const handler: Handler = async (event: {
                 x.loan_type.is_fixed &&
                 x.loan_type.term === event.queryStringParameters?.termYear || 30)
 
+        console.log('filtered', filtered);
         const summed = filtered
             .reduce((previousValue, currentValue) => {
                 previousValue.rate += currentValue.rate;
