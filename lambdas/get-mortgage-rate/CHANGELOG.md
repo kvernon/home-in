@@ -1,5 +1,11 @@
 # get-mortgage-rate
 
+## 0.1.3
+
+### Patch Changes
+
+- stringify logging
+
 ## 0.1.2
 
 ### Patch Changes
