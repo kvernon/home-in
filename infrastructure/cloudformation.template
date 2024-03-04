@@ -1,0 +1,174 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS API Gateway with a Lambda Integration
+
+# function file name (S3Key)
+# function name (FunctionName)
+# httpMethod ApiGatewayMethod.HttpMethod
+
+Parameters:
+  S3BucketName:
+    Description: Name of the 3s bucket to use
+    Type: String
+    Default: cubedelement-api-storage
+  APIKey:
+    Description: API Key for the API
+    Type: String
+    Default: ""
+  RapidAPIKey:
+    Description: API Key for Rapid API
+    Type: String
+    Default: ""
+  RapidAPISecret:
+    Description: Secret Key for Rapid API
+    Type: String
+    Default: ""
+  LambdaFileName:
+    Description: name of the file for the zip (.zip already added in template)
+    Type: String
+    Default: "unknown-file"
+  LambdaName:
+    Description: name of the lambda being used
+    Type: String
+    Default: "unknown-name"
+  HttpMethod:
+    Type: String
+    Default: GET
+
+Resources:
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join [ '/', [ '/aws/lambda', !Ref LambdaName ] ]
+      RetentionInDays: 3 # days
+
+  LambdaIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: LambdaLogPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !GetAtt LambdaLogGroup.Arn
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: S3BucketName
+        S3Key:
+          Fn::Sub:
+            - ${fileName}.zip
+            - fileName: !Ref LambdaFileName
+      Description: AWS Lambda function
+      FunctionName:
+        Ref: LambdaName
+      Handler: handle.handler
+      MemorySize: 256
+      Role: !GetAtt LambdaIamRole.Arn
+      Runtime: nodejs18.x
+      Timeout: 60
+      LoggingConfig:
+        LogFormat: JSON # Application logs format, defaults to JSON (TEXT is optional)
+        ApplicationLogLevel: DEBUG  # Application log level, defaults to INFO
+        SystemLogLevel: DEBUG  # System log level, defaults to INFO
+      Environment:
+        Variables:
+          API_KEY: !Ref APIKey
+          RAPID_API_KEY: !Ref RapidAPIKey
+          RAPID_API_SECRET: !Ref RapidAPISecret
+
+  ApiGatewayIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ''
+            Effect: 'Allow'
+            Principal:
+              Service:
+                - 'apigateway.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: LambdaAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action: 'lambda:*'
+                Resource: !GetAtt LambdaFunction.Arn
+
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      ApiKeySourceType: HEADER
+      Description: An API Gateway with a Lambda Integration
+      EndpointConfiguration:
+        Types:
+          - EDGE
+      Name: ce-realty-api
+
+  ApiGatewayResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: 'lambda'
+      RestApiId: !Ref ApiGatewayRestApi
+
+  ApiGatewayMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: !Ref HttpMethod
+      Integration:
+        ConnectionType: INTERNET
+        Credentials: !GetAtt ApiGatewayIamRole.Arn
+        IntegrationHttpMethod: POST
+        PassthroughBehavior: WHEN_NO_MATCH
+        TimeoutInMillis: 29000
+        Type: AWS_PROXY
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
+      OperationName: 'lambda'
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
+
+  ApiGatewayModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: 'application/json'
+      RestApiId: !Ref ApiGatewayRestApi
+      Schema: { }
+
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref ApiGatewayDeployment
+      Description: Lambda API Stage v0
+      RestApiId: !Ref ApiGatewayRestApi
+      StageName: 'v0'
+
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: ApiGatewayMethod
+    Properties:
+      Description: Lambda API Deployment
+      RestApiId: !Ref ApiGatewayRestApi
