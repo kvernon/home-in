@@ -56,5 +56,5 @@ pnpm bundle:aws --APIKey=foo --RapidAPIKey=foo2 --RapidAPISecret=foo3
 1. ensure you're not in a pre-release: `pnpm changeset pre exit`
 2. version this release: `pnpm changeset version`
 3. do your commit(s)
-4. yarn changeset publish
+4. `pnpm changeset publish`
 5. git push --follow-tags
