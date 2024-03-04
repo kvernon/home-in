@@ -64,7 +64,7 @@ export const handler: Handler = async (event: {
 
         const result: MortgageAverage = {loanType: '', rate: 0};
 
-        console.log('response', response);
+        console.log('response', JSON.stringify(response));
         if (!response?.data?.loan_analysis?.market?.mortgage_data?.average_rate?.length) {
             return {
                 statusCode: StatusCodes.notFound,
@@ -77,7 +77,7 @@ export const handler: Handler = async (event: {
                 x.loan_type.is_fixed &&
                 x.loan_type.term === event.queryStringParameters?.termYear || 30)
 
-        console.log('filtered', filtered);
+        console.log('filtered', JSON.stringify(filtered));
         const summed = filtered
             .reduce((previousValue, currentValue) => {
                 previousValue.rate += currentValue.rate;
