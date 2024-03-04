@@ -1,5 +1,11 @@
 # get-mortgage-rate
 
+## 0.1.2
+
+### Patch Changes
+
+- updated response
+
 ## 0.1.1
 
 ### Patch Changes
