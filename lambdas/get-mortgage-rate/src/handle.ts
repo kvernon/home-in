@@ -65,14 +65,14 @@ export const handler: Handler = async (event: {
         const result: MortgageAverage = {loanType: '', rate: 0};
 
         console.log('response', response);
-        if (!response?.loan_analysis?.market?.mortgage_data?.average_rate?.length) {
+        if (!response?.data?.loan_analysis?.market?.mortgage_data?.average_rate?.length) {
             return {
                 statusCode: StatusCodes.notFound,
                 body: JSON.stringify(new NotFoundHttpStatusError('Not Found'))
             };
         }
 
-        const filtered = response.loan_analysis.market.mortgage_data.average_rate
+        const filtered = response?.data?.loan_analysis.market.mortgage_data.average_rate
             .filter(x => !x.loan_type.is_va_loan &&
                 x.loan_type.is_fixed &&
                 x.loan_type.term === event.queryStringParameters?.termYear || 30)
@@ -84,7 +84,7 @@ export const handler: Handler = async (event: {
                 return previousValue;
             }, {rate: 0, loan_type: {is_va_loan: false, term: 0, is_fixed: false}});
 
-        result.rate = summed.rate / response.loan_analysis.market.mortgage_data.average_rate.length;
+        result.rate = summed.rate / response.data.loan_analysis.market.mortgage_data.average_rate.length;
         result.loanType = filtered[0].loan_type.display_name;
 
         return {

@@ -30,46 +30,48 @@ describe('handler unit tests', () => {
 
         describe('with data', () => {
             let rawData: RawMortgageRate = {
-                loan_analysis: {
-                    market: {
-                        mortgage_data: {
-                            average_rate: [{
-                                rate: 4,
-                                loan_type: {
-                                    loan_id: "thirty_year_fix",
-                                    term: 30,
-                                    is_va_loan: false,
-                                    is_fixed: true,
-                                    display_name: "display_name"
-                                }
-                            }, {
-                                rate: 4,
-                                loan_type: {
-                                    loan_id: "thirty_year_fix",
-                                    term: 30,
-                                    is_va_loan: false,
-                                    is_fixed: true,
-                                    display_name: "display_name"
-                                }
-                            }, {
-                                rate: 4,
-                                loan_type: {
-                                    loan_id: "thirty_year_fha",
-                                    term: 30,
-                                    is_va_loan: false,
-                                    is_fixed: false,
-                                    display_name: "display_name"
-                                }
-                            }, {
-                                rate: 4,
-                                loan_type: {
-                                    loan_id: "five_one_arm",
-                                    term: 5,
-                                    is_va_loan: false,
-                                    is_fixed: false,
-                                    display_name: "display_name"
-                                }
-                            }]
+                data: {
+                    loan_analysis: {
+                        market: {
+                            mortgage_data: {
+                                average_rate: [{
+                                    rate: 4,
+                                    loan_type: {
+                                        loan_id: "thirty_year_fix",
+                                        term: 30,
+                                        is_va_loan: false,
+                                        is_fixed: true,
+                                        display_name: "display_name"
+                                    }
+                                }, {
+                                    rate: 4,
+                                    loan_type: {
+                                        loan_id: "thirty_year_fix",
+                                        term: 30,
+                                        is_va_loan: false,
+                                        is_fixed: true,
+                                        display_name: "display_name"
+                                    }
+                                }, {
+                                    rate: 4,
+                                    loan_type: {
+                                        loan_id: "thirty_year_fha",
+                                        term: 30,
+                                        is_va_loan: false,
+                                        is_fixed: false,
+                                        display_name: "display_name"
+                                    }
+                                }, {
+                                    rate: 4,
+                                    loan_type: {
+                                        loan_id: "five_one_arm",
+                                        term: 5,
+                                        is_va_loan: false,
+                                        is_fixed: false,
+                                        display_name: "display_name"
+                                    }
+                                }]
+                            }
                         }
                     }
                 }
@@ -129,10 +131,12 @@ describe('handler unit tests', () => {
 
         describe('with empty average_rate', () => {
             let rawData: RawMortgageRate = {
-                loan_analysis: {
-                    market: {
-                        mortgage_data: {
-                            average_rate: []
+                data: {
+                    loan_analysis: {
+                        market: {
+                            mortgage_data: {
+                                average_rate: []
+                            }
                         }
                     }
                 }

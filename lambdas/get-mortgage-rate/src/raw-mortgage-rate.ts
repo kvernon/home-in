@@ -9,10 +9,12 @@ export type RawAverageRate = {
     rate: number;
 };
 export type RawMortgageRate = {
-    loan_analysis: {
-        market: {
-            mortgage_data: {
-                average_rate: RawAverageRate[]
+    data: {
+        loan_analysis: {
+            market: {
+                mortgage_data: {
+                    average_rate: RawAverageRate[]
+                }
             }
         }
     }
